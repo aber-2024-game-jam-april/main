@@ -39,7 +39,7 @@ BOTTOM_VIEWPORT_MARGIN = 150
 TOP_VIEWPORT_MARGIN = 100
 
 PLAYER_START_X = 2
-PLAYER_START_Y = 1
+PLAYER_START_Y = 60
 
 # Constants used to track if the player is facing left or right
 RIGHT_FACING = 0
@@ -300,7 +300,7 @@ class GameView(arcade.View):
         self.gui_camera = arcade.Camera(self.window.width, self.window.height)
 
         # Map name
-        map_name = ":resources:tiled_maps/map_with_ladders.json"
+        map_name = "map2.json"
 
         # Layer Specific Options for the Tilemap
         layer_options = {
@@ -470,6 +470,9 @@ class GameView(arcade.View):
 
         if key == arcade.key.Q:
             self.shoot_pressed = True
+
+        if key == arcade.key.R:
+            self.setup()
 
         if key == arcade.key.PLUS:
             self.camera.zoom(0.01)
@@ -689,3 +692,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    
