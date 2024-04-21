@@ -1,6 +1,8 @@
 import arcade
 import arcade.gui
 
+import decay
+
 # Constants
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 650
@@ -9,6 +11,7 @@ SCREEN_RESIZABLE = False
 
 
 class MyWindow(arcade.Window):
+
     def __init__(self):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, SCREEN_RESIZABLE)
 
@@ -25,27 +28,28 @@ class MyWindow(arcade.Window):
 
         # Create the buttons
         start_button = arcade.gui.UIFlatButton(text="Start Game", width=200)
-        self.v_box.add(start_button.with_space_around(bottom=20))
+        self.v_box.add(start_button.with_space_around(bottom=30))
 
         settings_button = arcade.gui.UIFlatButton(text="Settings", width=200)
         #self.v_box.add(settings_button.with_space_around(bottom=20))
 
         quit_button = arcade.gui.UIFlatButton(text="Quit", width=200)
-        self.v_box.add(quit_button.with_space_around(bottom=20))
+        self.v_box.add(quit_button.with_space_around(bottom=30))
 
         # use a decorator to handle on_click events
         @settings_button.event("on_click")
         def on_click_settings(event):
-            print("Settings:", event)
+            print("Settings button clicked")
 
         @start_button.event("on_click")
         def on_click_start(event):
-            print("Start:",event)
+            #self.visible = False
+            decay.main()
 
         @quit_button.event("on_click")
-        def on_click_start(event):
-            print("Event:",event)
-        
+        def on_click_quit(event):
+            quit()
+
         # Create a widget to hold the v_box widget, that will center the buttons
         self.manager.add(
             arcade.gui.UIAnchorWidget(
@@ -54,12 +58,9 @@ class MyWindow(arcade.Window):
                 child=self.v_box)
         )
 
-        def on_click_start(self, event):
-            print("Start:", event)
-
-        def on_draw(self):
-            arcade.start_render()
-            self.manager.draw()
+    def on_draw(self):
+        arcade.start_render()
+        self.manager.draw()
 
 window = MyWindow()
 arcade.run()
