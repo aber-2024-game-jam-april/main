@@ -7,13 +7,11 @@ import math
 import os
 
 import arcade
-import arcade.gui
 
 # Constants
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 650
-SCREEN_TITLE = "Decay"
-SCREEN_RESIZABLE = False
+SCREEN_TITLE = "Platformer"
 
 # Constants used to scale our sprites from their original size
 TILE_SCALING = 0.5
@@ -31,7 +29,7 @@ BULLET_DAMAGE = 25
 # Movement speed of player, in pixels per frame
 PLAYER_MOVEMENT_SPEED = 7
 GRAVITY = 1.5
-PLAYER_JUMP_SPEED = PLAYER_MOVEMENT_SPEED * 18 / 7
+PLAYER_JUMP_SPEED = 30
 
 # How many pixels to keep as a minimum margin between the character
 # and the edge of the screen.
@@ -41,7 +39,7 @@ BOTTOM_VIEWPORT_MARGIN = 150
 TOP_VIEWPORT_MARGIN = 100
 
 PLAYER_START_X = 2
-PLAYER_START_Y = 1
+PLAYER_START_Y = 60
 
 # Constants used to track if the player is facing left or right
 RIGHT_FACING = 0
@@ -56,16 +54,11 @@ LAYER_NAME_PLAYER = "Player"
 LAYER_NAME_ENEMIES = "Enemies"
 LAYER_NAME_BULLETS = "Bullets"
 
-DEBUG = False
-DEBUG_LOAD_TEXTURE_PAIR = False
 
 def load_texture_pair(filename):
     """
     Load a texture pair, with the second being a mirror image.
     """
-    if DEBUG and DEBUG_LOAD_TEXTURE_PAIR:
-        print(filename)
-
     return [
         arcade.load_texture(filename),
         arcade.load_texture(filename, flipped_horizontally=True),
@@ -83,8 +76,8 @@ class Entity(arcade.Sprite):
         self.cur_texture = 0
         self.scale = CHARACTER_SCALING
 
-        main_path = f":resources:images/animated_characters/{name_folder}/{name_file}"
-        
+        main_path = f"images/animated_characters/{name_folder}/{name_file}"
+
         self.idle_texture_pair = load_texture_pair(f"{main_path}_idle.png")
         self.jump_texture_pair = load_texture_pair(f"{main_path}_jump.png")
         self.fall_texture_pair = load_texture_pair(f"{main_path}_fall.png")
@@ -132,7 +125,7 @@ class Enemy(Entity):
         if self.change_x == 0:
             self.texture = self.idle_texture_pair[self.facing_direction]
             return
-        
+
         # Walking animation
         if self.should_update_walk == 3:
             self.cur_texture += 1
@@ -216,43 +209,17 @@ class PlayerCharacter(Entity):
             self.cur_texture = 0
         self.texture = self.walk_textures[self.cur_texture][self.facing_direction]
 
-class PlayGameButton(arcade.gui.UIFlatButton):
-    def on_click(self, event: arcade.gui.UIOnClickEvent):
-        game_view = GameView()
-        self.window.show_view(game_view)
-
-class QuitButton(arcade.gui.UIFlatButton):
-    def on_click(self, event: arcade.gui.UIOnClickEvent):
-        arcade.exit()
-
-class SettingsButton(arcade.gui.UIFlatButton):
-    def on_click(self, event: arcade.gui.UIOnClickEvent):
-        print("Not yet handled")
-        arcade.exit()
 
 class MainMenu(arcade.View):
     """Class that manages the 'menu' view."""
-    
-    quitButton = QuitButton()
-    playButton = PlayGameButton()
-    settingsButton = SettingsButton()
-
-    
 
     def on_show_view(self):
-        
         """Called when switching to this view."""
+        arcade.set_background_color(arcade.color.WHITE)
 
     def on_draw(self):
         """Draw the menu"""
         self.clear()
-
-        self.window.background_color = arcade.color.BLUE
-
-        #arcade.start_render()
-        #self.window.manager.draw()
-
-        
         arcade.draw_text(
             "Main Menu - Click to play",
             SCREEN_WIDTH / 2,
@@ -261,16 +228,11 @@ class MainMenu(arcade.View):
             font_size=30,
             anchor_x="center",
         )
-        
-        
 
     def on_mouse_press(self, _x, _y, _button, _modifiers):
         """Use a mouse press to advance to the 'game' view."""
-        
         game_view = GameView()
         self.window.show_view(game_view)
-        
-        
 
 
 class GameView(arcade.View):
@@ -278,20 +240,15 @@ class GameView(arcade.View):
     Main application class.
     """
 
-    oldXPos = None
-
     def __init__(self):
         """
         Initializer for the game
         """
-
-        
-
         super().__init__()
 
         # Set the path to start with this program
         file_path = os.path.dirname(os.path.abspath(__file__))
-        print(f"Working Directort: {file_path}")
+        print(file_path)
         os.chdir(file_path)
 
         # Track the current state of what key is pressed
@@ -330,14 +287,13 @@ class GameView(arcade.View):
         self.shoot_timer = 0
 
         # Load sounds
-        self.collect_coin_sound = arcade.load_sound(":resources:sounds/coin1.wav")
-        self.jump_sound = arcade.load_sound(":resources:sounds/jump1.wav")
-        self.game_over = arcade.load_sound(":resources:sounds/gameover1.wav")
-        self.shoot_sound = arcade.load_sound(":resources:sounds/hurt5.wav")
-        self.hit_sound = arcade.load_sound(":resources:sounds/hit5.wav")
+        self.collect_coin_sound = arcade.load_sound("sounds/coin1.wav")
+        self.jump_sound = arcade.load_sound("sounds/jump1.wav")
+        self.game_over = arcade.load_sound("sounds/gameover1.wav")
+        self.shoot_sound = arcade.load_sound("sounds/hurt5.wav")
+        self.hit_sound = arcade.load_sound("sounds/hit5.wav")
 
     def setup(self):
-        
         """Set up the game here. Call this function to restart the game."""
 
         # Set up the Cameras
@@ -345,7 +301,7 @@ class GameView(arcade.View):
         self.gui_camera = arcade.Camera(self.window.width, self.window.height)
 
         # Map name
-        map_name = "map_final..tmx"
+        map_name = "main_final.tmj"
 
         # Layer Specific Options for the Tilemap
         layer_options = {
@@ -492,36 +448,11 @@ class GameView(arcade.View):
                 self.player_sprite.change_y = 0
             elif self.up_pressed and self.down_pressed:
                 self.player_sprite.change_y = 0
-        
-        #Get players X position
-        
-        XPos = self.player_sprite.center_x
-        
-        if XPos != self.oldXPos:
-            print(f"PlayerX: {XPos}\nPLAYER_MOVEMENT_SPEED: {PLAYER_MOVEMENT_SPEED}\nEndOfMap: {self.end_of_map}\n")
-
-        self.oldXPos = XPos
-        
 
         # Process left/right
         if self.right_pressed and not self.left_pressed:
-            #move to the right
-            #print("reached here")
-            #if ^ plus PLAYER_MOVEMENT_SPEED is larger than map length
-            #if XPos > self.end_of_map:
-                #print("")
-                #move
-                #print(f"Moving right")
             self.player_sprite.change_x = PLAYER_MOVEMENT_SPEED
         elif self.left_pressed and not self.right_pressed:
-            #move to the left
-            #get player X position relative to the map 
-            XPos = self.player_sprite.center_x
-            #if ^ less PLAYER_MOVEMENT_SPEED is positive
-            if (XPos < 0):
-                self.setup()
-                #move
-            print(f"Moving left")
             self.player_sprite.change_x = -PLAYER_MOVEMENT_SPEED
         else:
             self.player_sprite.change_x = 0
@@ -543,7 +474,7 @@ class GameView(arcade.View):
 
         if key == arcade.key.R:
             self.setup()
-            
+
         if key == arcade.key.PLUS:
             self.camera.zoom(0.01)
         elif key == arcade.key.MINUS:
@@ -606,7 +537,7 @@ class GameView(arcade.View):
             if self.shoot_pressed:
                 arcade.play_sound(self.shoot_sound)
                 bullet = arcade.Sprite(
-                    ":resources:images/space_shooter/laserBlue01.png",
+                    "images/space_shooter/laserBlue01.png",
                     SPRITE_SCALING_LASER,
                 )
 
@@ -754,14 +685,12 @@ class GameOverView(arcade.View):
 
 def main():
     """Main function"""
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, resizable=False)
-
-    window.show_view(MainMenu())
-
-    window.manager = arcade.gui.UIManager()
-    
-    arcade.set_background_color(arcade.color.DARK_BLUE_GRAY)
+    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    menu_view = MainMenu()
+    window.show_view(menu_view)
     arcade.run()
-    
+
+
 if __name__ == "__main__":
     main()
+    

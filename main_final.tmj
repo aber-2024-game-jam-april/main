@@ -4,7 +4,8 @@
     {
      "export":
         {
-         "format":"json"
+         "format":"tmx",
+         "target":"main_final..tmx"
         }
     },
  "height":50,
@@ -423,23 +424,23 @@
  "tilesets":[
         {
          "firstgid":1,
-         "source":"..\/..\/..\/AppData\/Local\/Programs\/Python\/Python37\/Lib\/site-packages\/arcade\/resources\/tiled_maps\/grass.json"
+         "source":"resources\/tiled_maps\/grass.json"
         }, 
         {
          "firstgid":20,
-         "source":"..\/..\/..\/AppData\/Local\/Programs\/Python\/Python37\/Lib\/site-packages\/arcade\/resources\/tiled_maps\/dirt.json"
+         "source":"resources\/tiled_maps\/dirt.json"
         }, 
         {
          "firstgid":38,
-         "source":"..\/..\/..\/AppData\/Local\/Programs\/Python\/Python37\/Lib\/site-packages\/arcade\/resources\/tiled_maps\/items.json"
+         "source":"resources\/tiled_maps\/items.json"
         }, 
         {
          "firstgid":62,
-         "source":"..\/..\/..\/AppData\/Local\/Programs\/Python\/Python37\/Lib\/site-packages\/arcade\/resources\/tiled_maps\/more_tiles.json"
+         "source":"resources\/tiled_maps\/more_tiles.json"
         }, 
         {
          "firstgid":210,
-         "source":"..\/art assets\/new pixel art.tsx"
+         "source":"new pixel art.tsx"
         }],
  "tilewidth":120,
  "type":"map",
