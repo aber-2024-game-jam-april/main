@@ -56,11 +56,16 @@ LAYER_NAME_PLAYER = "Player"
 LAYER_NAME_ENEMIES = "Enemies"
 LAYER_NAME_BULLETS = "Bullets"
 
+DEBUG = False
+DEBUG_LOAD_TEXTURE_PAIR = False
 
 def load_texture_pair(filename):
     """
     Load a texture pair, with the second being a mirror image.
     """
+    if DEBUG and DEBUG_LOAD_TEXTURE_PAIR:
+        print(filename)
+
     return [
         arcade.load_texture(filename),
         arcade.load_texture(filename, flipped_horizontally=True),
@@ -79,7 +84,7 @@ class Entity(arcade.Sprite):
         self.scale = CHARACTER_SCALING
 
         main_path = f":resources:images/animated_characters/{name_folder}/{name_file}"
-
+        
         self.idle_texture_pair = load_texture_pair(f"{main_path}_idle.png")
         self.jump_texture_pair = load_texture_pair(f"{main_path}_jump.png")
         self.fall_texture_pair = load_texture_pair(f"{main_path}_fall.png")
@@ -756,6 +761,6 @@ def main():
     
     arcade.set_background_color(arcade.color.DARK_BLUE_GRAY)
     arcade.run()
-
+    
 if __name__ == "__main__":
     main()
