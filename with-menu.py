@@ -1,6 +1,4 @@
-import arcade.color
-
-
+#bruno
 def game():
     """
     Platformer Game
@@ -12,17 +10,11 @@ def game():
     import time
     
     import arcade
-    
-    import time
-
-    #Debug
-    DEBUG = False
-    DEBUG_playerIsOffCamera = True
 
     # Constants
     SCREEN_WIDTH = 1000
     SCREEN_HEIGHT = 650
-    SCREEN_TITLE = "Decay"
+    SCREEN_TITLE = "Platformer"
 
     # Constants used to scale our sprites from their original size
     TILE_SCALING = 0.5
@@ -38,7 +30,7 @@ def game():
     BULLET_DAMAGE = 25
 
     # Movement speed of player, in pixels per frame
-    PLAYER_MOVEMENT_SPEED = 7
+    PLAYER_MOVEMENT_SPEED = 5
     GRAVITY = 1.5
     PLAYER_JUMP_SPEED = 30
 
@@ -138,6 +130,7 @@ def game():
                 return
 
             # Walking animation
+
             if self.should_update_walk == 3:
                 self.cur_texture += 1
                 if self.cur_texture > 7:
@@ -252,9 +245,6 @@ def game():
         Main application class.
         """
 
-        map_name_list = ["main_final.tmj","main_final2.tmj","main_final3.tmj"]
-        map_name_index = 0
-
         def __init__(self):
             """
             Initializer for the game
@@ -316,7 +306,7 @@ def game():
             self.gui_camera = arcade.Camera(self.window.width, self.window.height)
 
             # Map name
-            map_name = self.map_name_list[self.map_name_index]
+            map_name = "main_final.tmj"
 
             # Layer Specific Options for the Tilemap
             layer_options = {
@@ -392,9 +382,8 @@ def game():
 
             # --- Other stuff
             # Set the background color
-            arcade.set_background_color(arcade.color.ARSENIC)
-            #if self.tile_map.background_color:
-            #    arcade.set_background_color(self.tile_map.background_color)
+            if self.tile_map.background_color:
+                arcade.set_background_color(self.tile_map.background_color)
 
             # Create the 'physics engine'
             self.physics_engine = arcade.PhysicsEnginePlatformer(
@@ -404,15 +393,7 @@ def game():
                 ladders=self.scene[LAYER_NAME_LADDERS],
                 walls=self.scene[LAYER_NAME_PLATFORMS]
             )
-
-        @staticmethod
-        def goToNextMap():
-            #increment the index
-            GameView.map_name_index += 1
-            #check if the index is too large
-            if GameView.map_name_index > len(GameView.map_name_list) - 1:
-                #reset index
-                GameView.map_name_index = 0
+            arcade.set_background_color(arcade.color.ARSENIC)
 
         def on_show_view(self):
             self.setup()
@@ -678,11 +659,6 @@ def game():
                         points = int(collision.properties["Points"])
                         self.score += points
 
-                        
-                        #time.sleep(6)
-                        GameView.goToNextMap()
-                        
-                        self.setup()
 
             # Position the camera
             self.center_camera_to_player()
@@ -790,7 +766,7 @@ def menu():
                     anchor_x="center_x",
                     anchor_y="center_y",
                     child=self.v_box)
-            )      
+            )
 
         def on_draw(self):
             arcade.start_render()
