@@ -132,7 +132,7 @@ class Enemy(Entity):
         if self.change_x == 0:
             self.texture = self.idle_texture_pair[self.facing_direction]
             return
-
+        
         # Walking animation
         if self.should_update_walk == 3:
             self.cur_texture += 1
@@ -291,6 +291,7 @@ class GameView(arcade.View):
 
         # Set the path to start with this program
         file_path = os.path.dirname(os.path.abspath(__file__))
+        print(f"Working Directort: {file_path}")
         os.chdir(file_path)
 
         # Track the current state of what key is pressed
