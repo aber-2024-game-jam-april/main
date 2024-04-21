@@ -9,7 +9,8 @@ def game():
     """
     import math
     import os
-
+    import time
+    
     import arcade
     
     import time
@@ -123,8 +124,8 @@ def game():
             self.should_update_walk = 0
             self.health = 0
 
-        #def update_animation(self, delta_time: float = 1 / 60):
-
+        def update_animation(self, delta_time: float = 1 / 60):
+            
             # Figure out if we need to flip face left or right
             if self.change_x < 0 and self.facing_direction == RIGHT_FACING:
                 self.facing_direction = LEFT_FACING
@@ -243,6 +244,7 @@ def game():
             """Use a mouse press to advance to the 'game' view."""
             game_view = GameView()
             self.window.show_view(game_view)
+            arcade.set_background_color(arcade.color.ARSENIC)
 
 
     class GameView(arcade.View):
@@ -250,7 +252,7 @@ def game():
         Main application class.
         """
 
-        map_name_list = ["main_final.tmj","main_final2.tmj"]
+        map_name_list = ["main_final.tmj","main_final2.tmj","main_final3.tmj"]
         map_name_index = 0
 
         def __init__(self):
@@ -306,21 +308,6 @@ def game():
             self.shoot_sound = arcade.load_sound("sounds/hurt5.wav")
             self.hit_sound = arcade.load_sound("sounds/hit5.wav")
 
-            # create endOfRoundText
-            self.endOfRoundText:arcade.Text = arcade.Text(
-                text="come back once you've seen the reality of this world", 
-                color = arcade.color.BLACK,
-                width=150,
-                align="center",
-                start_x=100,
-                start_y=100,
-                anchor_x = "left",
-                anchor_y="baseline"
-            )
-            # states if endOfRoundText should be drawn
-            self.drawEndOfRoundText:bool = False
-            self.drawEndOfRoundTextHasBeenSet = not self.drawEndOfRoundText
-        
         def setup(self):
             """Set up the game here. Call this function to restart the game."""
 
@@ -454,39 +441,11 @@ def game():
                 18,
             )
 
-            
-
             # Draw hit boxes.
             # for wall in self.wall_list:
             #     wall.draw_hit_box(arcade.color.BLACK, 3)
             #
             # self.player_sprite.draw_hit_box(arcade.color.RED, 3)
-        #broken
-        def playerIsOffCamera(self) -> bool:
-            screen_center_x = self.camera.scale * (self.player_sprite.center_x - (self.camera.viewport_width / 2))
-            screen_center_y = self.camera.scale * (self.player_sprite.center_y - (self.camera.viewport_height / 2))
-
-            #playerIsPastTheLeftEdge = screen_center_x - SCREEN_WIDTH / 2 < 0
-            playerIsPastTheLeftEdge = self.player_sprite.center_x < 0
-            #playerIsPastTheLeftEdge = False
-            print(type(self))
-
-            playerIsPastTheRightEdge = screen_center_x + SCREEN_WIDTH / 2 > SCREEN_WIDTH
-            playerIsPastTheRightEdge = False
-            playerIsAboveTheTopEdge = False
-            playerIsBelowTheBottomEdge = False
-            if DEBUG and DEBUG_playerIsOffCamera:
-                print(f"playerIsOffCamera variables\n" +
-                      f"screen_center_x,y: [{screen_center_x},{screen_center_y}]\n"+
-                      f"player_center_x_y: [{self.player_sprite.center_x},{self.player_sprite.center_y}]\n"+
-                      f"playerIsPastTheLeftEdge: {playerIsPastTheLeftEdge}\n" +
-                      f"playerIsPastTheRightEdge: {playerIsPastTheRightEdge}\n" +
-                      f"playerIsAboveTheTopEdge (faulty): {playerIsAboveTheTopEdge}\n" +
-                      f"playerIsBelowTheBottomEdge (faulty): {playerIsBelowTheBottomEdge}\n")
-
-            playerIsPastAnyEdge = playerIsPastTheLeftEdge or playerIsPastTheRightEdge or playerIsAboveTheTopEdge or playerIsBelowTheBottomEdge
-            
-            return playerIsPastAnyEdge
 
         def process_keychange(self):
             """
@@ -510,7 +469,7 @@ def game():
             # Process up/down when on a ladder and no movement
             if self.physics_engine.is_on_ladder():
                 if not self.up_pressed and not self.down_pressed:
-                    self.player_sprite.change_y = 0
+                    self.player_sprite.change_y = -4 ##new change
                 elif self.up_pressed and self.down_pressed:
                     self.player_sprite.change_y = 0
 
@@ -668,14 +627,14 @@ def game():
                     and enemy.right > enemy.boundary_right
                     and enemy.change_x > 0
                 ):
-                    enemy.change_x *= 0
+                    enemy.change_x *= -1
 
                 if (
                     enemy.boundary_left
                     and enemy.left < enemy.boundary_left
                     and enemy.change_x < 0
                 ):
-                    enemy.change_x *= 0
+                    enemy.change_x *= -1
 
             for bullet in self.scene[LAYER_NAME_BULLETS]:
                 hit_list = arcade.check_for_collision_with_lists(
@@ -737,12 +696,11 @@ def game():
                         game_over = GameOverView()
                         self.window.show_view(game_over)
                     else:
-                        
                         points = int(collision.properties["Points"])
                         self.score += points
 
                         
-                        time.sleep(6)
+                        #time.sleep(6)
                         GameView.goToNextMap()
                         
                         self.setup()
@@ -774,6 +732,7 @@ def game():
             """Use a mouse press to advance to the 'game' view."""
             game_view = GameView()
             self.window.show_view(game_view)
+            arcade.set_background_color(arcade.color.ARSENIC)
 
 
     def main():
@@ -783,6 +742,7 @@ def game():
         #window.show_view(menu_view)
         game_view = GameView()
         window.show_view(game_view)
+        arcade.set_background_color(arcade.color.ARSENIC)
         arcade.run()
 
 
@@ -814,7 +774,7 @@ def menu():
             self.manager.enable()
 
             # Set background color
-            arcade.set_background_color(arcade.color.DARK_BLUE_GRAY)
+            arcade.set_background_color(arcade.color.ARSENIC)
 
             # Create a vertical BoxGroup to align buttons
             self.v_box = arcade.gui.UIBoxLayout()
