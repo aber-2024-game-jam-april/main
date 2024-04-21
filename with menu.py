@@ -241,6 +241,9 @@ def game():
         Main application class.
         """
 
+        map_name_list = ["main_final.tmj","main_final2.tmj"]
+        map_name_index = 0
+
         def __init__(self):
             """
             Initializer for the game
@@ -302,7 +305,7 @@ def game():
             self.gui_camera = arcade.Camera(self.window.width, self.window.height)
 
             # Map name
-            map_name = "main_final.tmj"
+            map_name = self.map_name_list[self.map_name_index]
 
             # Layer Specific Options for the Tilemap
             layer_options = {
@@ -389,6 +392,15 @@ def game():
                 ladders=self.scene[LAYER_NAME_LADDERS],
                 walls=self.scene[LAYER_NAME_PLATFORMS]
             )
+
+        @staticmethod
+        def goToNextMap():
+            #increment the index
+            GameView.map_name_index += 1
+            #check if the index is too large
+            if GameView.map_name_index > len(GameView.map_name_list) - 1:
+                #reset index
+                GameView.map_name_index = 0
 
         def on_show_view(self):
             self.setup()
@@ -651,9 +663,16 @@ def game():
                         game_over = GameOverView()
                         self.window.show_view(game_over)
                     else:
+                        print("here")
                         points = int(collision.properties["Points"])
                         self.score += points
-
+                        GameView.goToNextMap()
+                        
+                        self.setup()
+                        
+                    #remove coin 
+                    #print("there")
+                    #player_collision_list.remove(collision)
 
             # Position the camera
             self.center_camera_to_player()
