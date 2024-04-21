@@ -113,7 +113,7 @@ class Enemy(Entity):
         self.should_update_walk = 0
         self.health = 0
 
-    def update_animation(self, delta_time: float = 1 / 60):
+    #def update_animation(self, delta_time: float = 1 / 60):
 
         # Figure out if we need to flip face left or right
         if self.change_x < 0 and self.facing_direction == RIGHT_FACING:
@@ -581,14 +581,14 @@ class GameView(arcade.View):
                 and enemy.right > enemy.boundary_right
                 and enemy.change_x > 0
             ):
-                enemy.change_x *= -1
+                enemy.change_x *= 0
 
             if (
                 enemy.boundary_left
                 and enemy.left < enemy.boundary_left
                 and enemy.change_x < 0
             ):
-                enemy.change_x *= -1
+                enemy.change_x *= 0
 
         for bullet in self.scene[LAYER_NAME_BULLETS]:
             hit_list = arcade.check_for_collision_with_lists(
@@ -646,13 +646,13 @@ class GameView(arcade.View):
                 # Figure out how many points this coin is worth
                 if "Points" not in collision.properties:
                     print("Warning, collected a coin without a Points property.")
+                    arcade.play_sound(self.game_over)
+                    game_over = GameOverView()
+                    self.window.show_view(game_over)
                 else:
                     points = int(collision.properties["Points"])
                     self.score += points
 
-                # Remove the coin
-                collision.remove_from_sprite_lists()
-                arcade.play_sound(self.collect_coin_sound)
 
         # Position the camera
         self.center_camera_to_player()
@@ -687,8 +687,9 @@ def main():
     """Main function"""
     window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     #menu_view = MainMenu()
-    game_View = GameView()
-    window.show_view(game_View)
+    #window.show_view(menu_view)
+    game_view = GameView()
+    window.show_view(game_view)
     arcade.run()
 
 
