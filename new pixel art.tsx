@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset version="1.10" tiledversion="1.10.2" name="new pixel art" tilewidth="120" tileheight="120" tilecount="54" columns="0">
+<tileset version="1.10" tiledversion="1.10.2" name="new pixel art" tilewidth="120" tileheight="120" tilecount="57" columns="0">
  <grid orientation="orthogonal" width="1" height="1"/>
  <tile id="0">
   <image width="120" height="120" source="grass/grass-block.png"/>
@@ -162,5 +162,14 @@
  </tile>
  <tile id="65">
   <image width="120" height="120" source="metal/metal-good.png"/>
+ </tile>
+ <tile id="66">
+  <image width="120" height="120" source="liquid/liquid-full.png"/>
+ </tile>
+ <tile id="67">
+  <image width="120" height="120" source="liquid/liquid-top.png"/>
+ </tile>
+ <tile id="68">
+  <image width="120" height="120" source="msic objects/ladder.png"/>
  </tile>
 </tileset>

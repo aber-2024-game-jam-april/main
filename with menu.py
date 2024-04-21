@@ -1,3 +1,6 @@
+import arcade.color
+
+
 def game():
     """
     Platformer Game
@@ -8,11 +11,17 @@ def game():
     import os
 
     import arcade
+    
+    import time
+
+    #Debug
+    DEBUG = False
+    DEBUG_playerIsOffCamera = True
 
     # Constants
     SCREEN_WIDTH = 1000
     SCREEN_HEIGHT = 650
-    SCREEN_TITLE = "Platformer"
+    SCREEN_TITLE = "Decay"
 
     # Constants used to scale our sprites from their original size
     TILE_SCALING = 0.5
@@ -297,6 +306,21 @@ def game():
             self.shoot_sound = arcade.load_sound("sounds/hurt5.wav")
             self.hit_sound = arcade.load_sound("sounds/hit5.wav")
 
+            # create endOfRoundText
+            self.endOfRoundText:arcade.Text = arcade.Text(
+                text="come back once you've seen the reality of this world", 
+                color = arcade.color.BLACK,
+                width=150,
+                align="center",
+                start_x=100,
+                start_y=100,
+                anchor_x = "left",
+                anchor_y="baseline"
+            )
+            # states if endOfRoundText should be drawn
+            self.drawEndOfRoundText:bool = False
+            self.drawEndOfRoundTextHasBeenSet = not self.drawEndOfRoundText
+        
         def setup(self):
             """Set up the game here. Call this function to restart the game."""
 
@@ -430,11 +454,39 @@ def game():
                 18,
             )
 
+            
+
             # Draw hit boxes.
             # for wall in self.wall_list:
             #     wall.draw_hit_box(arcade.color.BLACK, 3)
             #
             # self.player_sprite.draw_hit_box(arcade.color.RED, 3)
+        #broken
+        def playerIsOffCamera(self) -> bool:
+            screen_center_x = self.camera.scale * (self.player_sprite.center_x - (self.camera.viewport_width / 2))
+            screen_center_y = self.camera.scale * (self.player_sprite.center_y - (self.camera.viewport_height / 2))
+
+            #playerIsPastTheLeftEdge = screen_center_x - SCREEN_WIDTH / 2 < 0
+            playerIsPastTheLeftEdge = self.player_sprite.center_x < 0
+            #playerIsPastTheLeftEdge = False
+            print(type(self))
+
+            playerIsPastTheRightEdge = screen_center_x + SCREEN_WIDTH / 2 > SCREEN_WIDTH
+            playerIsPastTheRightEdge = False
+            playerIsAboveTheTopEdge = False
+            playerIsBelowTheBottomEdge = False
+            if DEBUG and DEBUG_playerIsOffCamera:
+                print(f"playerIsOffCamera variables\n" +
+                      f"screen_center_x,y: [{screen_center_x},{screen_center_y}]\n"+
+                      f"player_center_x_y: [{self.player_sprite.center_x},{self.player_sprite.center_y}]\n"+
+                      f"playerIsPastTheLeftEdge: {playerIsPastTheLeftEdge}\n" +
+                      f"playerIsPastTheRightEdge: {playerIsPastTheRightEdge}\n" +
+                      f"playerIsAboveTheTopEdge (faulty): {playerIsAboveTheTopEdge}\n" +
+                      f"playerIsBelowTheBottomEdge (faulty): {playerIsBelowTheBottomEdge}\n")
+
+            playerIsPastAnyEdge = playerIsPastTheLeftEdge or playerIsPastTheRightEdge or playerIsAboveTheTopEdge or playerIsBelowTheBottomEdge
+            
+            return playerIsPastAnyEdge
 
         def process_keychange(self):
             """
@@ -469,6 +521,28 @@ def game():
                 self.player_sprite.change_x = -PLAYER_MOVEMENT_SPEED
             else:
                 self.player_sprite.change_x = 0
+            
+            if (DEBUG):
+                print(f"X: {self.player_sprite.center_x} Y: {self.player_sprite.center_y} Maximum X co-ordinate: {SCREEN_WIDTH}")
+            
+            #determine if player is out of bounds
+            #if self.playerIsOffCamera():
+                #respawn player
+                #self.setup()
+
+            
+            """
+            #determine if player is out of bounds
+            if self.player_sprite.center_x < 0:
+                #player is too far left
+                self.setup()
+            if self.player_sprite.center_x > SCREEN_WIDTH:
+                #player is too far right
+                self.setup()
+                #player is too high
+            #if self.player_sprite.center_y
+                #player is too low
+            """  
 
         def on_key_press(self, key, modifiers):
             """Called whenever a key is pressed."""
@@ -663,16 +737,15 @@ def game():
                         game_over = GameOverView()
                         self.window.show_view(game_over)
                     else:
-                        print("here")
+                        
                         points = int(collision.properties["Points"])
                         self.score += points
+
+                        
+                        time.sleep(6)
                         GameView.goToNextMap()
                         
                         self.setup()
-                        
-                    #remove coin 
-                    #print("there")
-                    #player_collision_list.remove(collision)
 
             # Position the camera
             self.center_camera_to_player()
