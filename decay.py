@@ -686,8 +686,9 @@ class GameOverView(arcade.View):
 def main():
     """Main function"""
     window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    menu_view = MainMenu()
-    window.show_view(menu_view)
+    #menu_view = MainMenu()
+    game_View = GameView()
+    window.show_view(game_View)
     arcade.run()
 
 
